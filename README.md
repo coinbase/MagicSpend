@@ -1,6 +1,6 @@
 # MagicSpend
 
-MagicSpend is a contract that allows onchain accounts to present valid Withdraw Requests and receive funds. A Withdraw Request is defined as 
+MagicSpend is a contract that allows onchain accounts to present valid Withdraw Requests and receive funds. A Withdraw Request is defined as
 
 ```solidity
 struct WithdrawRequest {
@@ -12,7 +12,8 @@ struct WithdrawRequest {
  }
 ```
 
-Where signature is an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) compliant signature of the message 
+Where signature is an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) compliant signature of the message
+
 ```solidity
 abi.encode(
   <MagicSpend contract address>,
@@ -25,17 +26,18 @@ abi.encode(
 )
 ```
 
-Magic Spend is an [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) compliant paymaster (EntryPoint [v0.6](https://github.com/eth-infinitism/account-abstraction/releases/tag/v0.6.0)) and also enables withdraw requests with asset ETH (`address(0)`) to be used to pay transaction gas. 
+MagicSpend is an [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) compliant paymaster (EntryPoint [v0.6](https://github.com/eth-infinitism/account-abstraction/releases/tag/v0.6.0)) and also enables withdraw requests with asset ETH (`address(0)`) to be used to pay transaction gas.
 
-This contract is part of a broader Magic Spend product from Coinbase, which as a whole allows Coinbase users to seamlessly use their assets onchain. 
+This contract is part of a broader MagicSpend product from Coinbase, which as a whole allows Coinbase users to seamlessly use their assets onchain.
 
-<img width="661" alt="Diagram of Coinbase user making use of Magic Spend" src="https://github.com/coinbase/magic-spend/assets/6678357/42d3a8fc-a376-4139-9ea9-040cf094d74b">
+<img width="661" alt="Diagram of Coinbase user making use of MagicSpend" src="https://github.com/coinbase/magic-spend/assets/6678357/42d3a8fc-a376-4139-9ea9-040cf094d74b">
 
+We have started a [discussion](https://ethereum-magicians.org/t/proposed-json-rpc-method-wallet-getassetbalance/) around a possible new wallet RPC to enable apps to have better awareness of this "just in time" funding.
 
-We have started a [discussion](https://ethereum-magicians.org/t/proposed-json-rpc-method-wallet-getassetbalance/) around a possible new wallet RPC to enable apps to have better awareness of this "just in time" funding. 
+## Detailed Flows
 
-## Detailed Flows 
-When the withdrawing account is an ERC-4337 compliant smart contract (like [Smart Wallet](https://github.com/coinbase/smart-wallet)), there are three different ways the Magic Spend smart contract can be used
+When the withdrawing account is an ERC-4337 compliant smart contract (like [Smart Wallet](https://github.com/coinbase/smart-wallet)), there are three different ways the MagicSpend smart contract can be used
+
 1. Pay gas only
 2. Transfer funds during execution only
 3. Pay gas and transfer funds during execution
@@ -44,15 +46,15 @@ When the withdrawing account is an ERC-4337 compliant smart contract (like [Smar
 
 <img width="901" alt="Pay gas only flow diagram" src="https://github.com/coinbase/magic-spend/assets/6678357/21274fb0-b901-4e20-bc1c-f320caa76e5b">
 
-1. A ERC-4337 UserOperation is submitted to the bundler. The paymasterAndData field includes the Magic Spend address and the withdrawal request.
-2. Bundler (EOA) calls EntryPoint smart contract. 
-3. Entrypoint first calls to `UserOperation.sender`, a smart contract wallet (SCW), to validate the user operation. 
-4. Entrypoint decrements the paymaster’s deposit in the Entrypoint. If the paymaster’s deposit is less than the gas cost, the transaction will revert. 
-5. EntryPoint calls the Magic Spend contract to run validations on the withdrawal, including checking the signature and ensuring withdraw.value is greater than transaction max gas cost.
+1. A ERC-4337 UserOperation is submitted to the bundler. The paymasterAndData field includes the MagicSpend address and the withdrawal request.
+2. Bundler (EOA) calls EntryPoint smart contract.
+3. Entrypoint first calls to `UserOperation.sender`, a smart contract wallet (SCW), to validate the user operation.
+4. Entrypoint decrements the paymaster’s deposit in the Entrypoint. If the paymaster’s deposit is less than the gas cost, the transaction will revert.
+5. EntryPoint calls the MagicSpend contract to run validations on the withdrawal, including checking the signature and ensuring withdraw.value is greater than transaction max gas cost.
 6. Entrypoint calls to SCW with `UserOperation.calldata`
-7. SCW does arbitrary operation, invoked by `UserOperation.calldata`. 
-8. Entrypoint makes post-op call to Magic Spend, with actual gas used in transaction. 
-9. Magic Spend sends the SCW any withdraw.value minus actual gas used.
+7. SCW does arbitrary operation, invoked by `UserOperation.calldata`.
+8. Entrypoint makes post-op call to MagicSpend, with actual gas used in transaction.
+9. MagicSpend sends the SCW any withdraw.value minus actual gas used.
 10. Entrypoint refunds the paymaster if actual gas < estimated gas from (4.)
 11. Entrypoint pays bundler for tx gas
 
@@ -60,30 +62,31 @@ When the withdrawing account is an ERC-4337 compliant smart contract (like [Smar
 
 <img width="600" alt="Diagram of 'Transfer funds during execution only' flow" src="https://github.com/coinbase/magic-spend/assets/6678357/124548ca-209d-41ac-844a-cbf5717a702e">
 
-This is the simplest flow. The Magic Spend account is agnostic to any details of this transaction, even whether or not the caller is a SCW. It simply validates the withdraw and transfers funds if valid. 
+This is the simplest flow. The MagicSpend account is agnostic to any details of this transaction, even whether or not the caller is a SCW. It simply validates the withdraw and transfers funds if valid.
 
 ### Pay gas and transfer funds during execution
 
 <img width="898" alt="Pay gas and transfer funds during execution" src="https://github.com/coinbase/magic-spend/assets/6678357/4b81fea7-9b45-4cfd-acdb-66f88f6bc642">
 
-
-This flow is like "Pay gas only” with the addition of (7.) and (8.). Here, the SCW also requests funds during execution. In this flow, a user might be, for example, trying to mint an NFT and needs funds for the mint. 
+This flow is like "Pay gas only” with the addition of (7.) and (8.). Here, the SCW also requests funds during execution. In this flow, a user might be, for example, trying to mint an NFT and needs funds for the mint.
 
 ## Deployments
 
-| Network   | Contract Address                        |
-|-----------|-----------------------------------------|
-| Base | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://basescan.org/address/0x011A61C07DbF256A68256B1cB51A5e246730aB92) |
+| Network      | Contract Address                                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Base         | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://basescan.org/address/0x011A61C07DbF256A68256B1cB51A5e246730aB92)         |
 | Base Sepolia | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://sepolia.basescan.org/address/0x011a61c07dbf256a68256b1cb51a5e246730ab92) |
 
+## Developing
 
-## Developing 
 After cloning the repo, run the tests using Forge, from [Foundry](https://github.com/foundry-rs/foundry?tab=readme-ov-file)
+
 ```bash
 forge test
 ```
 
 You can run the echinda tests with this make command
+
 ```bash
 make echidna-test
 ```
