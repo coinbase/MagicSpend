@@ -8,7 +8,7 @@ import {UserOperation} from "account-abstraction/interfaces/UserOperation.sol";
 import {IPaymaster} from "account-abstraction/interfaces/IPaymaster.sol";
 import {IEntryPoint} from "account-abstraction/interfaces/IEntryPoint.sol";
 
-/// @title Magic Spend
+/// @title MagicSpend
 ///
 /// @author Coinbase (https://github.com/coinbase/magic-spend)
 ///
