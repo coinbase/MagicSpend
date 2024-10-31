@@ -69,14 +69,6 @@ This is the simplest flow. The Magic Spend account is agnostic to any details of
 
 This flow is like "Pay gas only” with the addition of (7.) and (8.). Here, the SCW also requests funds during execution. In this flow, a user might be, for example, trying to mint an NFT and needs funds for the mint. 
 
-## Deployments
-
-| Network   | Contract Address                        |
-|-----------|-----------------------------------------|
-| Base | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://basescan.org/address/0x011A61C07DbF256A68256B1cB51A5e246730aB92) |
-| Base Sepolia | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://sepolia.basescan.org/address/0x011a61c07dbf256a68256b1cb51a5e246730ab92) |
-
-
 ## Developing 
 After cloning the repo, run the tests using Forge, from [Foundry](https://github.com/foundry-rs/foundry?tab=readme-ov-file)
 ```bash
