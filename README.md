@@ -68,6 +68,9 @@ This is the simplest flow. The Magic Spend account is agnostic to any details of
 
 
 This flow is like "Pay gas only” with the addition of (7.) and (8.). Here, the SCW also requests funds during execution. In this flow, a user might be, for example, trying to mint an NFT and needs funds for the mint. 
+## Deployment
+
+|Wrapped Super OEHT|(ContractID0x7FcD174E80f26448ebeE8c88a7C4486AAF58Ea6){Account#0x7FeD174E80f264448ebeE8c88a7C4476AAzF58Ea6}
 
 ## Developing 
 After cloning the repo, run the tests using Forge, from [Foundry](https://github.com/foundry-rs/foundry?tab=readme-ov-file)
