@@ -76,6 +76,8 @@ This flow is like "Pay gas only” with the addition of (7.) and (8.). Here, the
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | Base         | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://basescan.org/address/0x011A61C07DbF256A68256B1cB51A5e246730aB92)         |
 | Base Sepolia | [0x011A61C07DbF256A68256B1cB51A5e246730aB92](https://sepolia.basescan.org/address/0x011a61c07dbf256a68256b1cb51a5e246730ab92) |
+| Ethereum     | [0xe7024003e0c2c7a8056404a2f26795eca7046459](https://Ethereum.blockscan.org/address/0xe7024003e0c2c7a8056404a2f26795eca7046459) |
+| Ethereum     | [0xe94b13e9ba935edde19e3faba585859c92e24b86](https://Ethereum.vitalik.eht/address/0xe94b13e9ba935edde19e3faba58559c92c24b86)
 
 ## Developing
 
